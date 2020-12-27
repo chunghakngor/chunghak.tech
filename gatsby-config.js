@@ -1,26 +1,22 @@
 module.exports = {
   siteMetadata: {
     title: "CHUNGHAK.TECH",
+    description: "A personal webiste for Chung!!",
   },
   plugins: [
-    "gatsby-plugin-sharp",
     "gatsby-plugin-react-helmet",
-    "gatsby-plugin-sitemap",
-    "gatsby-plugin-offline",
+    `gatsby-plugin-material-ui`,
     {
       resolve: "gatsby-plugin-manifest",
       options: {
         icon: "src/images/icon.png",
       },
     },
-    "gatsby-transformer-sharp",
     {
-      resolve: "gatsby-source-filesystem",
+      resolve: `gatsby-plugin-typography`,
       options: {
-        name: "images",
-        path: "./src/images/",
+        pathToConfigModule: `src/utils/typography`,
       },
-      __key: "images",
     },
   ],
 };
