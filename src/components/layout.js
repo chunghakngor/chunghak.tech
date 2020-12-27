@@ -1,43 +1,55 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { graphql, Link, useStaticQuery } from "gatsby";
-import { Grid } from "@material-ui/core";
-import pageStyles from "./layout.module.css";
+import { Grid, AppBar, makeStyles } from "@material-ui/core";
 
-const Layout = ({ children, title }) => {
-  const data = useStaticQuery(graphql`
-    query {
-      site {
-        siteMetadata {
-          title
-        }
-      }
-    }
-  `);
+import DisplayMobile from "./DisplayMobile";
+import DisplayDesktop from "./DisplayDesktop";
+
+const Layout = ({ children, title, bgImage }) => {
+  const [mobileView, setMobileView] = useState(false);
+  const checkRes = () => {
+    return window.innerWidth < 900 ? setMobileView(true) : setMobileView(false);
+  };
+
+  useEffect(() => {
+    checkRes();
+    window.addEventListener("resize", () => checkRes());
+  }, []);
+
+  const useStyles = makeStyles(() => ({
+    header: {
+      backgroundColor: "#ffffff",
+      paddingRight: "79px",
+      paddingLeft: "118px",
+      "@media (max-width: 900px)": {
+        paddingLeft: 0,
+      },
+    },
+  }));
 
   return (
-    <div>
+    <Grid
+      container
+      direction="column"
+      justify="flex-start"
+      alignItems="center"
+      style={{
+        height: "100vh",
+        width: "100%",
+        backgroundImage: `url(${bgImage})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+      }}>
       <Helmet title={`CHUNG | ${title}`} defer="false" />
-      <Grid container direction="column" justify="center" alignItems="center">
-        <Grid item container style={{ padding: "2em" }} direction="row" justify="flex-end" alignItems="center" spacing={6}>
-          <Grid item xs={9}>
-            <Link to="/">{data.site.siteMetadata.title}</Link>
-          </Grid>
-          <Grid item>
-            <Link to="/about">About</Link>
-          </Grid>
-          <Grid item>
-            <Link to="/project">Project</Link>
-          </Grid>
-          <Grid item>
-            <Link to="/contact">Contact</Link>
-          </Grid>
-        </Grid>
-        <Grid item xs={11}>
-          {children}
-        </Grid>
+      <AppBar className={useStyles.header} style={{ backgroundColor: "transparent", boxShadow: "none", paddingTop: "2em" }}>
+        {mobileView ? <DisplayMobile title={title} /> : <DisplayDesktop title={title} />}
+      </AppBar>
+
+      <Grid item xs={10} style={{ width: "100%" }}>
+        {children}
       </Grid>
-    </div>
+    </Grid>
   );
 };
 
